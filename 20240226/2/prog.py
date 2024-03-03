@@ -10,7 +10,7 @@ class Monster():
 
 
     def __str__(self):
-        return cowsay(self.text)
+        return cowsay(self.text, cow=self.name)
 
 
 class Pers():
