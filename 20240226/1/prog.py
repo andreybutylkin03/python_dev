@@ -2,15 +2,14 @@ from cowsay import cowsay
 import sys
 
 class Monster():
-    def __init__(self, x, y, hi, kind='default'):
+    def __init__(self, x, y, hi):
         self.x = x
         self.y = y
         self.text = hi
-        self.kind = kind
 
 
     def __str__(self):
-        return cowsay(self.text, cow=self.kind)
+        return cowsay(self.text)
 
 
 class Pers():
