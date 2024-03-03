@@ -1,4 +1,5 @@
-import cowsay
+from cowsay import cowsay
+import sys
 
 class Monster():
     def __init__(self, x, y, hi, kind='default'):
@@ -24,7 +25,7 @@ class Pers():
 
 
     def move_y(self, step):
-        self.y += step
+        self.y -= step
 
         if self.y == -1:
             self.y = 9
@@ -35,18 +36,18 @@ class Pers():
 class Area():
     def __init__(self):
         self.pers = Pers()
-        self.monster = [[None] for i in range(10)] for i in range(10)
+        self.monster = [[None for j in range(10)] for i in range(10)]
 
 
     def moved_to(self, direction):
         match direction:
-            case ['up']:
+            case 'up':
                 self.pers.move_y(1)
-            case ['down']:
+            case 'down':
                 self.pers.move_y(-1)
-            case ['left']:
+            case 'left':
                 self.pers.move_x(-1)
-            case ['right']:
+            case 'right':
                 self.pers.move_x(1)
 
         print(f"Moved to ({self.pers.x}, {self.pers.y})")
@@ -63,3 +64,24 @@ class Area():
             print("Replaced the old monster")
 
 
+area = Area()
+
+for s in sys.stdin:
+    match s.replace('\n', '').split():
+        case [direction] if direction in {'up', 'down', 'left', 'right'}:
+            area.moved_to(direction)
+        case ['addmon', x, y, hello]:
+            try:
+                x = int(x)
+                y = int(y)
+
+                if not (0 <= x <= 9):
+                    raise TypeError
+                if not (0 <= y <= 9):
+                    raise TypeError
+
+                area.addmon(x, y, hello)
+            except:
+                print("Invalid arguments")
+        case _:
+            print("Invalid command")
