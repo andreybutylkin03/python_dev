@@ -49,5 +49,17 @@ class Area():
             case ['right']:
                 self.pers.move_x(1)
 
-        print(f"Moved to ({self.x}, {self.y})")
+        print(f"Moved to ({self.pers.x}, {self.pers.y})")
+
+
+    def addmon(self, x, y, hi):
+        vr_monster = self.monster[x][y]
+
+        self.monster[x][y] = Monster(x, y, hi)
+        
+        print(f"Added monster to ({x}, {y}) saying {hi}")
+
+        if vr_monster is not None:
+            print("Replaced the old monster")
+
 
