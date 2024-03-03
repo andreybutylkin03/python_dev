@@ -7,13 +7,15 @@ from os.path import basename, dirname
 
 SHIFT = "  "
 
-for store in iglob("../../.git/objects/??/*"):
+for store in iglob("/Users/a.s.butylkin/uniclust/.git/objects/??/*"):
     Id = basename(dirname(store)) + basename(store)
 
     with open(store, "rb") as f:
         obj = zlib.decompress(f.read())
         header, _, body = obj.partition(b'\x00')
         kind, size = header.split()
+
+        print(kind.decode(), size.decode())
     print("ID:", Id, kind.decode())
     if kind == b'tree':
         tail = body
@@ -26,4 +28,5 @@ for store in iglob("../../.git/objects/??/*"):
         out = body.decode().replace('\n', '\n' + SHIFT)
         print(f"{SHIFT}{out}")
     elif kind == b'blob':
-        print(body.decode())
+        #print(body.decode())
+        pass
