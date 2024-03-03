@@ -9,6 +9,10 @@ class Monster():
         self.kind = kind
 
 
+    def __str__(self):
+        return cowsay(self.text, cow=self.kind)
+
+
 class Pers():
     def __init__(self, x=0, y=0):
         self.x = x
@@ -52,6 +56,8 @@ class Area():
 
         print(f"Moved to ({self.pers.x}, {self.pers.y})")
 
+        self.encounter(self.pers.x, self.pers.y)
+
 
     def addmon(self, x, y, hi):
         vr_monster = self.monster[x][y]
@@ -62,6 +68,11 @@ class Area():
 
         if vr_monster is not None:
             print("Replaced the old monster")
+
+
+    def encounter(self, x, y):
+        if self.monster[x][y] is not None:
+            print(self.monster[x][y])
 
 
 area = Area()
