@@ -1,5 +1,6 @@
 from cowsay import cowsay, list_cows
 import sys
+import shlex
 
 class Monster():
     def __init__(self, x, y, hi, name='default'):
@@ -78,26 +79,27 @@ class Area():
         if self.monster[x][y] is not None:
             print(self.monster[x][y])
 
+if __name__ == "__main__":
+    area = Area()
 
-area = Area()
+    for s in sys.stdin:
+        res = shlex.split(s)
+        match res:
+            case [direction] if direction in {'up', 'down', 'left', 'right'}:
+                area.moved_to(direction)
+            case ['addmon', name, x, y, hello]:
+                try:
+                    x = int(x)
+                    y = int(y)
 
-for s in sys.stdin:
-    match s.replace('\n', '').split():
-        case [direction] if direction in {'up', 'down', 'left', 'right'}:
-            area.moved_to(direction)
-        case ['addmon', name, x, y, hello]:
-            try:
-                x = int(x)
-                y = int(y)
+                    if not (0 <= x <= 9):
+                        raise TypeError
+                    if not (0 <= y <= 9):
+                        raise TypeError
 
-                if not (0 <= x <= 9):
-                    raise TypeError
-                if not (0 <= y <= 9):
-                    raise TypeError
-
-                area.addmon(x, y, hello, name)
-            except:
-                print("Invalid arguments")
-        case _:
-            print("Invalid command")
+                    area.addmon(x, y, hello, name)
+                except:
+                    print("Invalid arguments")
+            case _:
+                print("Invalid command")
 
