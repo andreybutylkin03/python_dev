@@ -1,5 +1,24 @@
-from cowsay import cowsay, list_cows
+from cowsay import cowsay, list_cows, read_dot_cow
+from io import StringIO
 import sys
+
+
+class MonsterConst():
+    def __init__(self):
+        self.cow = read_dot_cow(StringIO("""
+        $the_cow = <<EOC;
+            ,_                    _,
+            ) '-._  ,_    _,  _.-' (
+            )  _.-'.|\\\0\\--//|.'-._  (
+             )'   .'\\/o\\/o\\/'.   `(
+              ) .' . \\====/ . '. (
+               )  / <<    >> \\  (
+                '-._/``  ``\\_.-'
+          jgs     __\\\0\\'--'//__
+                 (((""`  `"")))
+        EOC
+        """))
+
 
 class Monster():
     def __init__(self, x, y, hi, name='default'):
@@ -7,10 +26,14 @@ class Monster():
         self.y = y
         self.text = hi
         self.name = name
+        self.jgsbat = MonsterConst().cow
 
 
     def __str__(self):
-        return cowsay(self.text, cow=self.name)
+        if self.name == "jgsbat":
+            return cowsay(self.text, cowfile=self.jgsbat)
+        else:
+            return cowsay(self.text, cow=self.name)
 
 
 class Pers():
@@ -60,7 +83,7 @@ class Area():
 
 
     def addmon(self, x, y, hi, name):
-        if name not in list_cows():
+        if name not in list_cows() and name != "jgsbat":
             print("Cannot add unknown monster")
             return 
 
