@@ -142,8 +142,6 @@ if __name__ == "__main__":
                 x = a[x_id]
                 y = a[y_id]
 
-                print(h_id, hit_id, x_id, y_id, m_id)
-
                 try:
                     x = int(a[x_id])
                     y = int(a[y_id])
