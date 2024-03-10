@@ -1,6 +1,7 @@
 from cowsay import cowsay, list_cows, read_dot_cow
 from io import StringIO
 import sys
+import shlex
 
 
 class MonsterConst():
@@ -103,11 +104,11 @@ class Area():
 
 if __name__ == "__main__":
     print("<<< Welcome to Python-MUD 0.1 >>>")
-
     area = Area()
 
     for s in sys.stdin:
-        match s.replace('\n', '').split():
+        res = shlex.split(s)
+        match res:
             case [direction] if direction in {'up', 'down', 'left', 'right'}:
                 area.moved_to(direction)
             case ['addmon', name, x, y, hello]:
