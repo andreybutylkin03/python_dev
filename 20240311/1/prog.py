@@ -2,6 +2,14 @@ from cowsay import cowsay, list_cows, read_dot_cow
 from io import StringIO
 import sys
 import shlex
+import cmd
+import readline
+import rlcompleter
+
+if 'libedit' in readline.__doc__:
+    readline.parse_and_bind("bind ^I rl_complete")
+else:
+    readline.parse_and_bind("tab: complete")
 
 
 class MonsterConst():
@@ -103,11 +111,91 @@ class Area():
         if self.monster[x][y] is not None:
             print(self.monster[x][y])
 
+
+class InterGame(cmd.Cmd):
+    area = Area()
+    prompt = ''
+
+
+    def default(self, args):
+        print("Invalid command")
+
+
+    def do_up(self, args):
+        self.area.moved_to('up')
+ 
+
+    def do_down(self, args):
+        self.area.moved_to('down')
+
+
+    def do_left(self, args):
+        self.area.moved_to('left')
+
+
+    def do_right(self, args):
+        self.area.moved_to('right')
+
+
+    def do_addmon(self, args):
+        a = shlex.split(args, False, False)
+        monster_name, hello_string, hitpoints, x, y = '', '', 0, 0, 0
+        h_id, hit_id, x_id, y_id = [-1] * 4
+        fl = [False] * 3
+        m_id = 28
+        for i in range(len(a) - 1):
+            if a[i] == 'hello' and a[i + 1][0] == '"' or a[i + 1][0] == "'":
+                h_id = i + 1
+                m_id -= (i + i + 1)
+                fl[0] = True
+            elif a[i] == 'hp':
+                hit_id = i + 1
+                m_id -= (i + i + 1)
+                fl[1] = True
+            elif a[i] == 'coords' and i != len(a) - 2:
+                x_id = i + 1
+                y_id = i + 2
+                m_id -= (i + i + 1 + i + 2)
+                fl[2] = True
+        
+        if not all(fl):
+            print(h_id, hit_id, x_id, y_id)
+            print("Invalid command")
+            return
+
+        monster_name = a[m_id]
+        hello_string = a[h_id]
+        hitpoints = a[hit_id]
+        x = a[x_id]
+        y = a[y_id]
+
+        try:
+            x = int(a[x_id])
+            y = int(a[y_id])
+            hitpoints = int(a[hit_id])
+
+            if not (0 <= x <= 9):
+                raise TypeError
+            if not (0 <= y <= 9):
+                raise TypeError
+            if hitpoints <= 0:
+                raise TypeError
+
+            self.area.addmon(x, y, hello_string, monster_name, hitpoints)
+        except:
+            print("Invalid arguments")
+
+
+    def do_EOF(self, args):
+        return True
+
+
 if __name__ == "__main__":
     print("<<< Welcome to Python-MUD 0.1 >>>")
-    area = Area()
+    InterGame().cmdloop()
+    #area = Area()
 
-    for s in sys.stdin:
+    """for s in sys.stdin:
         res = shlex.split(s, False, False)
         match res:
             case [direction] if direction in {'up', 'down', 'left', 'right'}:
@@ -158,5 +246,5 @@ if __name__ == "__main__":
                 except:
                     print("Invalid arguments")
             case _:
-                print("Invalid command")
+                print("Invalid command")"""
 
