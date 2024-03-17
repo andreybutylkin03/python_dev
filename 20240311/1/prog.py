@@ -116,6 +116,7 @@ class InterGame(cmd.Cmd):
     area = Area()
     prompt = ''
     weapon = {'sword':10, 'spear':15, 'axe':20}
+    name_of_monster = list_cows() + ["jgsbat"]
 
 
     def default(self, args):
@@ -193,15 +194,19 @@ class InterGame(cmd.Cmd):
         else:
             a = shlex.split(args, False, False)
             damag = 10
-            
-            if len(a) > 1 and a[0] == 'with' and a[1] in {'sword', 'spear', 'axe'}:
-                damag = self.weapon[a[1]]
-            elif len(a) >= 1 and a[0] == 'with':
-                print("Unknown weapon")
-                return
 
             vr_hp = self.area.monster[self.area.pers.x][self.area.pers.y].hp
             vr_name = self.area.monster[self.area.pers.x][self.area.pers.y].name
+
+            if len(a) > 0 and a[0] != vr_name:
+                print(f"No {a[0]} here")
+                return
+            
+            if len(a) > 2 and a[1] == 'with' and a[2] in {'sword', 'spear', 'axe'}:
+                damag = self.weapon[a[2]]
+            elif len(a) >= 2 and a[1] == 'with':
+                print("Unknown weapon")
+                return
 
             if vr_hp > damag:
                 self.area.monster[self.area.pers.x][self.area.pers.y].hp -= damag
@@ -220,9 +225,11 @@ class InterGame(cmd.Cmd):
 
     def complete_attack(self, text, line, begidx, endidx):
         a = shlex.split(line[:begidx], False, False)
+
         if a[-1] == 'with':
             return [c for c in self.weapon if c.startswith(text)]
-
+        elif a[-1] == 'attack':
+            return [c for c in self.name_of_monster if c.startswith(text)]
 
 
     def do_EOF(self, args):
