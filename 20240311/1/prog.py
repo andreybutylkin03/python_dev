@@ -115,6 +115,7 @@ class Area():
 class InterGame(cmd.Cmd):
     area = Area()
     prompt = ''
+    name_of_monster = list_cows() + ["jgsbat"]
 
 
     def default(self, args):
@@ -190,8 +191,14 @@ class InterGame(cmd.Cmd):
         if self.area.monster[self.area.pers.x][self.area.pers.y] is None:
             print("No monster here")
         else:
+            a = shlex.split(args, False, False)
+
             vr_hp = self.area.monster[self.area.pers.x][self.area.pers.y].hp
             vr_name = self.area.monster[self.area.pers.x][self.area.pers.y].name
+
+            if a[0] != vr_name:
+                print(f"No {a[0]} here")
+                return
 
             if vr_hp > 10:
                 self.area.monster[self.area.pers.x][self.area.pers.y].hp -= 10
