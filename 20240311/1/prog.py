@@ -115,6 +115,7 @@ class Area():
 class InterGame(cmd.Cmd):
     area = Area()
     prompt = ''
+    weapon = {'sword':10, 'spear':15, 'axe':20}
 
 
     def default(self, args):
@@ -190,12 +191,18 @@ class InterGame(cmd.Cmd):
         if self.area.monster[self.area.pers.x][self.area.pers.y] is None:
             print("No monster here")
         else:
+            a = shlex.split(args, False, False)
+            damag = 10
+            
+            if len(a) > 1 and a[0] == 'with' and a[1] in {'sword', 'spear', 'axe'}:
+                damag = self.weapon[a[1]]
+
             vr_hp = self.area.monster[self.area.pers.x][self.area.pers.y].hp
             vr_name = self.area.monster[self.area.pers.x][self.area.pers.y].name
 
-            if vr_hp > 10:
-                self.area.monster[self.area.pers.x][self.area.pers.y].hp -= 10
-                vr_hp = 10
+            if vr_hp > damag:
+                self.area.monster[self.area.pers.x][self.area.pers.y].hp -= damag
+                vr_hp = damag
             else:
                 del self.area.monster[self.area.pers.x][self.area.pers.y]
                 self.area.monster[self.area.pers.x][self.area.pers.y] = None
