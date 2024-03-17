@@ -196,6 +196,9 @@ class InterGame(cmd.Cmd):
             
             if len(a) > 1 and a[0] == 'with' and a[1] in {'sword', 'spear', 'axe'}:
                 damag = self.weapon[a[1]]
+            elif len(a) >= 1 and a[0] == 'with':
+                print("Unknown weapon")
+                return
 
             vr_hp = self.area.monster[self.area.pers.x][self.area.pers.y].hp
             vr_name = self.area.monster[self.area.pers.x][self.area.pers.y].name
