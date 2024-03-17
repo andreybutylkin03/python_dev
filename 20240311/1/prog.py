@@ -215,6 +215,9 @@ class InterGame(cmd.Cmd):
                 print(f"{vr_name} now has {self.area.monster[self.area.pers.x][self.area.pers.y].hp}")
 
 
+    def complete_attack(self, text, line, begidx, endidx):
+        return [c for c in self.name_of_monster if c.startswith(text)]
+
 
     def do_EOF(self, args):
         print()
