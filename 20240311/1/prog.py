@@ -218,6 +218,12 @@ class InterGame(cmd.Cmd):
                 print(f"{vr_name} now has {self.area.monster[self.area.pers.x][self.area.pers.y].hp}")
 
 
+    def complete_attack(self, text, line, begidx, endidx):
+        a = shlex.split(line[:begidx], False, False)
+        if a[-1] == 'with':
+            return [c for c in self.weapon if c.startswith(text)]
+
+
 
     def do_EOF(self, args):
         print()
