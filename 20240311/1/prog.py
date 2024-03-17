@@ -189,9 +189,28 @@ class InterGame(cmd.Cmd):
     def do_attack(self, args):
         if self.area.monster[self.area.pers.x][self.area.pers.y] is None:
             print("No monster here")
+        else:
+            vr_hp = self.area.monster[self.area.pers.x][self.area.pers.y].hp
+            vr_name = self.area.monster[self.area.pers.x][self.area.pers.y].name
+
+            if vr_hp > 10:
+                self.area.monster[self.area.pers.x][self.area.pers.y].hp -= 10
+                vr_hp = 10
+            else:
+                del self.area.monster[self.area.pers.x][self.area.pers.y]
+                self.area.monster[self.area.pers.x][self.area.pers.y] = None
+
+            print(f"Attacked {vr_name}, damage {vr_hp} hp")
+
+            if self.area.monster[self.area.pers.x][self.area.pers.y] is None:
+                print(f"{vr_name} died")
+            else:
+                print(f"{vr_name} now has {self.area.monster[self.area.pers.x][self.area.pers.y].hp}")
+
 
 
     def do_EOF(self, args):
+        print()
         return True
 
 
