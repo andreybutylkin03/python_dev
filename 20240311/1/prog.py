@@ -186,6 +186,11 @@ class InterGame(cmd.Cmd):
             print("Invalid arguments")
 
 
+    def do_attack(self, args):
+        if self.area.monster[self.area.pers.x][self.area.pers.y] is None:
+            print("No monster here")
+
+
     def do_EOF(self, args):
         return True
 
