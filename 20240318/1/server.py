@@ -108,11 +108,11 @@ class Area():
             writer.write("nomonster\n".encode())
 
 
-    async def attack(self, monster_name, weapon_name, writer, reader):
+    async def attack(self, monster_name, weapon, writer, reader):
         if self.monster[self.pers.x][self.pers.y] is None:
             writer.write("No monster here\n".encode())
         else:
-            damag = self.weapon[weapon_name]
+            damag = weapon
 
             vr_hp = self.monster[self.pers.x][self.pers.y].hp
             vr_name = self.monster[self.pers.x][self.pers.y].name
@@ -125,7 +125,6 @@ class Area():
                 self.monster[self.pers.x][self.pers.y].hp -= damag
                 vr_hp = damag
             else:
-                del self.monster[self.pers.x][self.pers.y]
                 self.monster[self.pers.x][self.pers.y] = None
 
             writer.write(f"Attacked {vr_name}, damage {vr_hp} hp\n".encode())
@@ -150,8 +149,8 @@ async def echo(reader, writer):
                 await area.moved_to(int(x), int(y), writer, reader)
             case ['addmon', x, y, hello_string, monster_name, hp]:
                 await area.addmon(int(x), int(y), hello_string, monster_name, int(hp), writer, reader)
-            case ['attack', monster_name, 'with', weapon_name]:
-                await area.attack(monster_name, weapon_name, writer, reader)
+            case ['attack', monster_name, 'with', weapon]:
+                await area.attack(monster_name, int(weapon), writer, reader)
 
     writer.close()
     await writer.wait_closed()

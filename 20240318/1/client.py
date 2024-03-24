@@ -56,7 +56,7 @@ class InterGame(cmd.Cmd):
         print(ot)
         self.s.sendall("\n".encode())
 
-        ot = self.s.recv(1024).rstrip().decode().split()
+        ot = shlex.split(self.s.recv(1024).rstrip().decode())
         if len(ot) == 2:
             print(self.pr_mon(ot[0], ot[1]))
 
@@ -67,7 +67,7 @@ class InterGame(cmd.Cmd):
         print(ot)
         self.s.sendall("\n".encode())
 
-        ot = self.s.recv(1024).rstrip().decode().split()
+        ot = shlex.split(self.s.recv(1024).rstrip().decode())
         if len(ot) == 2:
             print(self.pr_mon(ot[0], ot[1]))
 
@@ -78,7 +78,7 @@ class InterGame(cmd.Cmd):
         print(ot)
         self.s.sendall("\n".encode())
 
-        ot = self.s.recv(1024).rstrip().decode().split()
+        ot = shlex.split(self.s.recv(1024).rstrip().decode())
         if len(ot) == 2:
             print(self.pr_mon(ot[0], ot[1]))
 
@@ -90,7 +90,7 @@ class InterGame(cmd.Cmd):
         print(ot)
         self.s.sendall("\n".encode())
 
-        ot = self.s.recv(1024).rstrip().decode().split()
+        ot = shlex.split(self.s.recv(1024).rstrip().decode())
         if len(ot) == 2:
             print(self.pr_mon(ot[0], ot[1]))
 
@@ -139,12 +139,14 @@ class InterGame(cmd.Cmd):
             if hitpoints <= 0:
                 raise TypeError
 
-            self.s.sendall(f"addmon {x} {y} '{hello_string}' {monster_name} {hitpoints}\n".encode())
-            print(self.s.recv(1024).rstrip().decode())
-            self.s.sendall("\n".encode())
-            if (vrr := self.s.recv(1024).rstrip().decode()) and (vr[0] == 'R'):
-                print(vrr)
-        except:
+            self.s.sendall(f"addmon {x} {y} {hello_string} {monster_name} {hitpoints}\n".encode())
+            vrr = self.s.recv(1024).rstrip().decode()
+            print(vrr)
+            if vrr != 'C':
+                self.s.sendall("\n".encode())
+                if (vrr := self.s.recv(1024).rstrip().decode()) and (vrr[0] == 'R'):
+                    print(vrr)
+        except Exception as ex:
             print("Invalid arguments")
 
 
@@ -153,15 +155,19 @@ class InterGame(cmd.Cmd):
         damag = 10
 
         monster_name = a[0]
-        weapon_name = 'sword'
 
-        if len(a) > 2 and a[1] == 'with':
-            weapon_name = a[2]
+        if len(a) > 2 and a[1] == 'with' and a[2] in {'sword', 'spear', 'axe'}:
+            damag = self.weapon[a[2]]
+        elif len(a) >= 2 and a[1] == 'with':
+            print("Unknown weapon")
+            return
 
-        self.s.sendall(f"attack {monster_name} with {weapon_name}\n".encode())
-        print(self.s.recv(1024).rstrip().decode())
-        self.s.sendall("\n".encode())
-        print(self.s.recv(1024).rstrip().decode())
+        self.s.sendall(f"attack {monster_name} with {damag}\n".encode())
+        vrr = self.s.recv(1024).rstrip().decode()
+        print(vrr)
+        if vrr[0] != 'N':
+            self.s.sendall("\n".encode())
+            print(self.s.recv(1024).rstrip().decode())
 
 
     def complete_attack(self, text, line, begidx, endidx):
