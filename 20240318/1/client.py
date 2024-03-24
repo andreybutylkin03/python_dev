@@ -12,6 +12,22 @@ if 'libedit' in readline.__doc__:
 else:
     readline.parse_and_bind("tab: complete")
 
+class MonsterConst():
+    def __init__(self):
+        self.cow = read_dot_cow(StringIO("""
+        $the_cow = <<EOC;
+            ,_                    _,
+            ) '-._  ,_    _,  _.-' (
+            )  _.-'.|\\\0\\--//|.'-._  (
+             )'   .'\\/o\\/o\\/'.   `(
+              ) .' . \\====/ . '. (
+               )  / <<    >> \\  (
+                '-._/``  ``\\_.-'
+          jgs     __\\\0\\'--'//__
+                 (((""`  `"")))
+        EOC
+        """))
+
 
 class InterGame(cmd.Cmd):
     prompt = ''
@@ -28,20 +44,55 @@ class InterGame(cmd.Cmd):
         print("Invalid command")
 
 
+    def pr_mon(self, name, text):
+        if name == "jgsbat":
+            return cowsay(text, cowfile=MonsterConst().cow)
+        else:
+            return cowsay(text, cow=name)
+
     def do_up(self, args):
-        self.s.sendall("move 1 0\n".encode())
+        self.s.sendall("move 0 1\n".encode())
+        ot = self.s.recv(1024).rstrip().decode()
+        print(ot)
+        self.s.sendall("\n".encode())
+
+        ot = self.s.recv(1024).rstrip().decode().split()
+        if len(ot) == 2:
+            print(self.pr_mon(ot[0], ot[1]))
 
 
     def do_down(self, args):
-        self.s.sendall("move -1 0\n".encode())
+        self.s.sendall("move 0 -1\n".encode())
+        ot = self.s.recv(1024).rstrip().decode()
+        print(ot)
+        self.s.sendall("\n".encode())
+
+        ot = self.s.recv(1024).rstrip().decode().split()
+        if len(ot) == 2:
+            print(self.pr_mon(ot[0], ot[1]))
 
 
     def do_left(self, args):
-        self.s.sendall("move 0 -1\n".encode())
+        self.s.sendall("move -1 0\n".encode())
+        ot = self.s.recv(1024).rstrip().decode()
+        print(ot)
+        self.s.sendall("\n".encode())
+
+        ot = self.s.recv(1024).rstrip().decode().split()
+        if len(ot) == 2:
+            print(self.pr_mon(ot[0], ot[1]))
+
 
 
     def do_right(self, args):
-        self.s.sendall("move 0 1\n".encode())
+        self.s.sendall("move 1 0\n".encode())
+        ot = self.s.recv(1024).rstrip().decode()
+        print(ot)
+        self.s.sendall("\n".encode())
+
+        ot = self.s.recv(1024).rstrip().decode().split()
+        if len(ot) == 2:
+            print(self.pr_mon(ot[0], ot[1]))
 
 
     def do_addmon(self, args):
@@ -89,7 +140,10 @@ class InterGame(cmd.Cmd):
                 raise TypeError
 
             self.s.sendall(f"addmon {x} {y} '{hello_string}' {monster_name} {hitpoints}\n".encode())
-            #self.area.addmon(x, y, hello_string, monster_name, hitpoints)
+            print(self.s.recv(1024).rstrip().decode())
+            self.s.sendall("\n".encode())
+            if (vrr := self.s.recv(1024).rstrip().decode()) and (vr[0] == 'R'):
+                print(vrr)
         except:
             print("Invalid arguments")
 
@@ -105,6 +159,9 @@ class InterGame(cmd.Cmd):
             weapon_name = a[2]
 
         self.s.sendall(f"attack {monster_name} with {weapon_name}\n".encode())
+        print(self.s.recv(1024).rstrip().decode())
+        self.s.sendall("\n".encode())
+        print(self.s.recv(1024).rstrip().decode())
 
 
     def complete_attack(self, text, line, begidx, endidx):

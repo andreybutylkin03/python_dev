@@ -70,50 +70,89 @@ class Area():
     def __init__(self):
         self.pers = Pers()
         self.monster = [[None for j in range(10)] for i in range(10)]
+        self.weapon = {'sword':10, 'spear':15, 'axe':20}
 
 
-    def moved_to(self, direction):
-        match direction:
-            case 'up':
-                self.pers.move_y(1)
-            case 'down':
-                self.pers.move_y(-1)
-            case 'left':
-                self.pers.move_x(-1)
-            case 'right':
-                self.pers.move_x(1)
+    async def moved_to(self, x, y, writer, reader):
+        self.pers.move_x(x)
+        self.pers.move_y(y)
 
-        print(f"Moved to ({self.pers.x}, {self.pers.y})")
+        writer.write(f"Moved to ({self.pers.x}, {self.pers.y})\n".encode())
+        await reader.readline()
 
-        self.encounter(self.pers.x, self.pers.y)
+        self.encounter(self.pers.x, self.pers.y, writer)
 
 
-    def addmon(self, x, y, hi, name, hp):
+    async def addmon(self, x, y, hi, name, hp, writer, reader):
         if name not in list_cows() and name != "jgsbat":
-            print("Cannot add unknown monster")
+            writer.write("Cannot add unknown monster\n".encode())
             return 
 
         vr_monster = self.monster[x][y]
 
         self.monster[x][y] = Monster(x, y, hi, name, hp)
         
-        print(f"Added monster {name} to ({x}, {y}) saying {hi}")
+        writer.write(f"Added monster {name} to ({x}, {y}) saying {hi}\n".encode())
+        await reader.readline()
 
         if vr_monster is not None:
-            print("Replaced the old monster")
+            writer.write("Replaced the old monster\n".encode())
+        else:
+            writer.write("\n".encode())
 
 
-    def encounter(self, x, y):
+    def encounter(self, x, y, writer):
         if self.monster[x][y] is not None:
-            print(self.monster[x][y])
+            writer.write(f"{self.monster[x][y].name} {self.monster[x][y].text}\n".encode())
+        else:
+            writer.write("nomonster\n".encode())
+
+
+    async def attack(self, monster_name, weapon_name, writer, reader):
+        if self.monster[self.pers.x][self.pers.y] is None:
+            writer.write("No monster here\n".encode())
+        else:
+            damag = self.weapon[weapon_name]
+
+            vr_hp = self.monster[self.pers.x][self.pers.y].hp
+            vr_name = self.monster[self.pers.x][self.pers.y].name
+
+            if monster_name != vr_name:
+                writer.write(f"No {monster_name} here\n".encode())
+                return
+            
+            if vr_hp > damag:
+                self.monster[self.pers.x][self.pers.y].hp -= damag
+                vr_hp = damag
+            else:
+                del self.monster[self.pers.x][self.pers.y]
+                self.monster[self.pers.x][self.pers.y] = None
+
+            writer.write(f"Attacked {vr_name}, damage {vr_hp} hp\n".encode())
+            await reader.readline()
+
+            if self.monster[self.pers.x][self.pers.y] is None:
+                writer.write(f"{vr_name} died\n".encode())
+            else:
+                writer.write(f"{vr_name} now has {self.monster[self.pers.x][self.pers.y].hp}\n".encode())
 
 
 async def echo(reader, writer):
     area = Area()
 
     while data := await reader.readline():
-        print(data)
-        writer.write(data.swapcase())
+        data = data.decode()
+        
+        s = shlex.split(data, False, False)
+
+        match s:
+            case ['move', x, y]:
+                await area.moved_to(int(x), int(y), writer, reader)
+            case ['addmon', x, y, hello_string, monster_name, hp]:
+                await area.addmon(int(x), int(y), hello_string, monster_name, int(hp), writer, reader)
+            case ['attack', monster_name, 'with', weapon_name]:
+                await area.attack(monster_name, weapon_name, writer, reader)
+
     writer.close()
     await writer.wait_closed()
 
