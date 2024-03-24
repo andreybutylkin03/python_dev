@@ -5,6 +5,7 @@ import shlex
 import cmd
 import readline
 import rlcompleter
+import socket
 
 if 'libedit' in readline.__doc__:
     readline.parse_and_bind("bind ^I rl_complete")
@@ -17,25 +18,30 @@ class InterGame(cmd.Cmd):
     weapon = {'sword':10, 'spear':15, 'axe':20}
     name_of_monster = list_cows() + ["jgsbat"]
 
+    host = "localhost"
+    port = 1337
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((host, port))
+
 
     def default(self, args):
         print("Invalid command")
 
 
     def do_up(self, args):
-        pass
+        self.s.sendall("move 1 0".encode())
 
 
     def do_down(self, args):
-        pass
+        self.s.sendall("move -1 0".encode())
 
 
     def do_left(self, args):
-        pass
+        self.s.sendall("move 0 -1".encode())
 
 
     def do_right(self, args):
-        pass
+        self.s.sendall("move 0 1".encode())
 
 
     def do_addmon(self, args):
@@ -65,11 +71,6 @@ class InterGame(cmd.Cmd):
             return
 
         monster_name = a[m_id]
-
-        if monster_name not in name_of_monster:
-            print("Cannot add unknown monster")
-            return 
-
         hello_string = a[h_id]
         hitpoints = a[hit_id]
         x = a[x_id]
@@ -87,6 +88,7 @@ class InterGame(cmd.Cmd):
             if hitpoints <= 0:
                 raise TypeError
 
+            self.s.sendall(f"addmon {x} {y} '{hello_string}' {monster_name} {hitpoints}".encode())
             #self.area.addmon(x, y, hello_string, monster_name, hitpoints)
         except:
             print("Invalid arguments")
@@ -102,6 +104,8 @@ class InterGame(cmd.Cmd):
         if len(a) > 2 and a[1] == 'with':
             weapon_name = a[2]
 
+        self.s.sendall(f"attack {monster_name} with {weapon_name}".encode())
+
 
     def complete_attack(self, text, line, begidx, endidx):
         a = shlex.split(line[:begidx], False, False)
@@ -113,6 +117,7 @@ class InterGame(cmd.Cmd):
 
 
     def do_EOF(self, args):
+        self.s.close()
         print()
         return True
 
