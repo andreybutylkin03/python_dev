@@ -29,19 +29,19 @@ class InterGame(cmd.Cmd):
 
 
     def do_up(self, args):
-        self.s.sendall("move 1 0".encode())
+        self.s.sendall("move 1 0\n".encode())
 
 
     def do_down(self, args):
-        self.s.sendall("move -1 0".encode())
+        self.s.sendall("move -1 0\n".encode())
 
 
     def do_left(self, args):
-        self.s.sendall("move 0 -1".encode())
+        self.s.sendall("move 0 -1\n".encode())
 
 
     def do_right(self, args):
-        self.s.sendall("move 0 1".encode())
+        self.s.sendall("move 0 1\n".encode())
 
 
     def do_addmon(self, args):
@@ -88,7 +88,7 @@ class InterGame(cmd.Cmd):
             if hitpoints <= 0:
                 raise TypeError
 
-            self.s.sendall(f"addmon {x} {y} '{hello_string}' {monster_name} {hitpoints}".encode())
+            self.s.sendall(f"addmon {x} {y} '{hello_string}' {monster_name} {hitpoints}\n".encode())
             #self.area.addmon(x, y, hello_string, monster_name, hitpoints)
         except:
             print("Invalid arguments")
@@ -104,7 +104,7 @@ class InterGame(cmd.Cmd):
         if len(a) > 2 and a[1] == 'with':
             weapon_name = a[2]
 
-        self.s.sendall(f"attack {monster_name} with {weapon_name}".encode())
+        self.s.sendall(f"attack {monster_name} with {weapon_name}\n".encode())
 
 
     def complete_attack(self, text, line, begidx, endidx):
@@ -117,6 +117,7 @@ class InterGame(cmd.Cmd):
 
 
     def do_EOF(self, args):
+        self.s.sendall("\0".encode())
         self.s.close()
         print()
         return True
