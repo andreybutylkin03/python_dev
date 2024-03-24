@@ -1,0 +1,139 @@
+From a797b3a3f0629949107cbfa9977e1824ee7641ca Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=D0=90=D0=BD=D0=B4=D1=80=D0=B5=D0=B9=20=D0=91=D1=83=D1=82?=
+ =?UTF-8?q?=D1=8B=D0=BB=D0=BA=D0=B8=D0=BD?= <s02210339@gse.cs.msu.ru>
+Date: Sun, 24 Mar 2024 23:10:52 +0300
+Subject: [PATCH 6/6] done
+
+---
+ 20240318/1/client.py | 40 +++++++++++++++++++++++-----------------
+ 20240318/1/server.py |  9 ++++-----
+ 2 files changed, 27 insertions(+), 22 deletions(-)
+
+diff --git a/20240318/1/client.py b/20240318/1/client.py
+index 370ae04..16aec41 100644
+--- a/20240318/1/client.py
++++ b/20240318/1/client.py
+@@ -56,7 +56,7 @@ class InterGame(cmd.Cmd):
+         print(ot)
+         self.s.sendall("\n".encode())
+ 
+-        ot = self.s.recv(1024).rstrip().decode().split()
++        ot = shlex.split(self.s.recv(1024).rstrip().decode())
+         if len(ot) == 2:
+             print(self.pr_mon(ot[0], ot[1]))
+ 
+@@ -67,7 +67,7 @@ class InterGame(cmd.Cmd):
+         print(ot)
+         self.s.sendall("\n".encode())
+ 
+-        ot = self.s.recv(1024).rstrip().decode().split()
++        ot = shlex.split(self.s.recv(1024).rstrip().decode())
+         if len(ot) == 2:
+             print(self.pr_mon(ot[0], ot[1]))
+ 
+@@ -78,7 +78,7 @@ class InterGame(cmd.Cmd):
+         print(ot)
+         self.s.sendall("\n".encode())
+ 
+-        ot = self.s.recv(1024).rstrip().decode().split()
++        ot = shlex.split(self.s.recv(1024).rstrip().decode())
+         if len(ot) == 2:
+             print(self.pr_mon(ot[0], ot[1]))
+ 
+@@ -90,7 +90,7 @@ class InterGame(cmd.Cmd):
+         print(ot)
+         self.s.sendall("\n".encode())
+ 
+-        ot = self.s.recv(1024).rstrip().decode().split()
++        ot = shlex.split(self.s.recv(1024).rstrip().decode())
+         if len(ot) == 2:
+             print(self.pr_mon(ot[0], ot[1]))
+ 
+@@ -139,12 +139,14 @@ class InterGame(cmd.Cmd):
+             if hitpoints <= 0:
+                 raise TypeError
+ 
+-            self.s.sendall(f"addmon {x} {y} '{hello_string}' {monster_name} {hitpoints}\n".encode())
+-            print(self.s.recv(1024).rstrip().decode())
+-            self.s.sendall("\n".encode())
+-            if (vrr := self.s.recv(1024).rstrip().decode()) and (vr[0] == 'R'):
+-                print(vrr)
+-        except:
++            self.s.sendall(f"addmon {x} {y} {hello_string} {monster_name} {hitpoints}\n".encode())
++            vrr = self.s.recv(1024).rstrip().decode()
++            print(vrr)
++            if vrr != 'C':
++                self.s.sendall("\n".encode())
++                if (vrr := self.s.recv(1024).rstrip().decode()) and (vrr[0] == 'R'):
++                    print(vrr)
++        except Exception as ex:
+             print("Invalid arguments")
+ 
+ 
+@@ -153,15 +155,19 @@ class InterGame(cmd.Cmd):
+         damag = 10
+ 
+         monster_name = a[0]
+-        weapon_name = 'sword'
+ 
+-        if len(a) > 2 and a[1] == 'with':
+-            weapon_name = a[2]
++        if len(a) > 2 and a[1] == 'with' and a[2] in {'sword', 'spear', 'axe'}:
++            damag = self.weapon[a[2]]
++        elif len(a) >= 2 and a[1] == 'with':
++            print("Unknown weapon")
++            return
+ 
+-        self.s.sendall(f"attack {monster_name} with {weapon_name}\n".encode())
+-        print(self.s.recv(1024).rstrip().decode())
+-        self.s.sendall("\n".encode())
+-        print(self.s.recv(1024).rstrip().decode())
++        self.s.sendall(f"attack {monster_name} with {damag}\n".encode())
++        vrr = self.s.recv(1024).rstrip().decode()
++        print(vrr)
++        if vrr[0] != 'N':
++            self.s.sendall("\n".encode())
++            print(self.s.recv(1024).rstrip().decode())
+ 
+ 
+     def complete_attack(self, text, line, begidx, endidx):
+diff --git a/20240318/1/server.py b/20240318/1/server.py
+index b1a9baa..dc2c5e7 100644
+--- a/20240318/1/server.py
++++ b/20240318/1/server.py
+@@ -108,11 +108,11 @@ class Area():
+             writer.write("nomonster\n".encode())
+ 
+ 
+-    async def attack(self, monster_name, weapon_name, writer, reader):
++    async def attack(self, monster_name, weapon, writer, reader):
+         if self.monster[self.pers.x][self.pers.y] is None:
+             writer.write("No monster here\n".encode())
+         else:
+-            damag = self.weapon[weapon_name]
++            damag = weapon
+ 
+             vr_hp = self.monster[self.pers.x][self.pers.y].hp
+             vr_name = self.monster[self.pers.x][self.pers.y].name
+@@ -125,7 +125,6 @@ class Area():
+                 self.monster[self.pers.x][self.pers.y].hp -= damag
+                 vr_hp = damag
+             else:
+-                del self.monster[self.pers.x][self.pers.y]
+                 self.monster[self.pers.x][self.pers.y] = None
+ 
+             writer.write(f"Attacked {vr_name}, damage {vr_hp} hp\n".encode())
+@@ -150,8 +149,8 @@ async def echo(reader, writer):
+                 await area.moved_to(int(x), int(y), writer, reader)
+             case ['addmon', x, y, hello_string, monster_name, hp]:
+                 await area.addmon(int(x), int(y), hello_string, monster_name, int(hp), writer, reader)
+-            case ['attack', monster_name, 'with', weapon_name]:
+-                await area.attack(monster_name, weapon_name, writer, reader)
++            case ['attack', monster_name, 'with', weapon]:
++                await area.attack(monster_name, int(weapon), writer, reader)
+ 
+     writer.close()
+     await writer.wait_closed()
+-- 
+2.44.0
+

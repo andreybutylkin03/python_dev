@@ -1,0 +1,292 @@
+From f469beff79c79ff0c0182008da83c2afc1878bc1 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=D0=90=D0=BD=D0=B4=D1=80=D0=B5=D0=B9=20=D0=91=D1=83=D1=82?=
+ =?UTF-8?q?=D1=8B=D0=BB=D0=BA=D0=B8=D0=BD?= <s02210339@gse.cs.msu.ru>
+Date: Sun, 24 Mar 2024 22:18:59 +0300
+Subject: [PATCH 4/6] more
+
+---
+ 20240318/1/.server.py.swp | Bin 0 -> 16384 bytes
+ 20240318/1/client.py      |  67 +++++++++++++++++++++++++++++---
+ 20240318/1/server.py      |  79 ++++++++++++++++++++++++++++----------
+ 3 files changed, 121 insertions(+), 25 deletions(-)
+ create mode 100644 20240318/1/.server.py.swp
+
+diff --git a/20240318/1/.server.py.swp b/20240318/1/.server.py.swp
+new file mode 100644
+index 0000000000000000000000000000000000000000..48fae2e6aa1945b3e48581e2e25d42e9d78598e6
+GIT binary patch
+literal 16384
+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
+TnLeic9?3)s`i{>EMUVdj8aK#l
+
+literal 0
+HcmV?d00001
+
+diff --git a/20240318/1/client.py b/20240318/1/client.py
+index bcf6897..370ae04 100644
+--- a/20240318/1/client.py
++++ b/20240318/1/client.py
+@@ -12,6 +12,22 @@ if 'libedit' in readline.__doc__:
+ else:
+     readline.parse_and_bind("tab: complete")
+ 
++class MonsterConst():
++    def __init__(self):
++        self.cow = read_dot_cow(StringIO("""
++        $the_cow = <<EOC;
++            ,_                    _,
++            ) '-._  ,_    _,  _.-' (
++            )  _.-'.|\\\0\\--//|.'-._  (
++             )'   .'\\/o\\/o\\/'.   `(
++              ) .' . \\====/ . '. (
++               )  / <<    >> \\  (
++                '-._/``  ``\\_.-'
++          jgs     __\\\0\\'--'//__
++                 (((""`  `"")))
++        EOC
++        """))
++
+ 
+ class InterGame(cmd.Cmd):
+     prompt = ''
+@@ -28,20 +44,55 @@ class InterGame(cmd.Cmd):
+         print("Invalid command")
+ 
+ 
++    def pr_mon(self, name, text):
++        if name == "jgsbat":
++            return cowsay(text, cowfile=MonsterConst().cow)
++        else:
++            return cowsay(text, cow=name)
++
+     def do_up(self, args):
+-        self.s.sendall("move 1 0\n".encode())
++        self.s.sendall("move 0 1\n".encode())
++        ot = self.s.recv(1024).rstrip().decode()
++        print(ot)
++        self.s.sendall("\n".encode())
++
++        ot = self.s.recv(1024).rstrip().decode().split()
++        if len(ot) == 2:
++            print(self.pr_mon(ot[0], ot[1]))
+ 
+ 
+     def do_down(self, args):
+-        self.s.sendall("move -1 0\n".encode())
++        self.s.sendall("move 0 -1\n".encode())
++        ot = self.s.recv(1024).rstrip().decode()
++        print(ot)
++        self.s.sendall("\n".encode())
++
++        ot = self.s.recv(1024).rstrip().decode().split()
++        if len(ot) == 2:
++            print(self.pr_mon(ot[0], ot[1]))
+ 
+ 
+     def do_left(self, args):
+-        self.s.sendall("move 0 -1\n".encode())
++        self.s.sendall("move -1 0\n".encode())
++        ot = self.s.recv(1024).rstrip().decode()
++        print(ot)
++        self.s.sendall("\n".encode())
++
++        ot = self.s.recv(1024).rstrip().decode().split()
++        if len(ot) == 2:
++            print(self.pr_mon(ot[0], ot[1]))
++
+ 
+ 
+     def do_right(self, args):
+-        self.s.sendall("move 0 1\n".encode())
++        self.s.sendall("move 1 0\n".encode())
++        ot = self.s.recv(1024).rstrip().decode()
++        print(ot)
++        self.s.sendall("\n".encode())
++
++        ot = self.s.recv(1024).rstrip().decode().split()
++        if len(ot) == 2:
++            print(self.pr_mon(ot[0], ot[1]))
+ 
+ 
+     def do_addmon(self, args):
+@@ -89,7 +140,10 @@ class InterGame(cmd.Cmd):
+                 raise TypeError
+ 
+             self.s.sendall(f"addmon {x} {y} '{hello_string}' {monster_name} {hitpoints}\n".encode())
+-            #self.area.addmon(x, y, hello_string, monster_name, hitpoints)
++            print(self.s.recv(1024).rstrip().decode())
++            self.s.sendall("\n".encode())
++            if (vrr := self.s.recv(1024).rstrip().decode()) and (vr[0] == 'R'):
++                print(vrr)
+         except:
+             print("Invalid arguments")
+ 
+@@ -105,6 +159,9 @@ class InterGame(cmd.Cmd):
+             weapon_name = a[2]
+ 
+         self.s.sendall(f"attack {monster_name} with {weapon_name}\n".encode())
++        print(self.s.recv(1024).rstrip().decode())
++        self.s.sendall("\n".encode())
++        print(self.s.recv(1024).rstrip().decode())
+ 
+ 
+     def complete_attack(self, text, line, begidx, endidx):
+diff --git a/20240318/1/server.py b/20240318/1/server.py
+index 1c06120..b1a9baa 100644
+--- a/20240318/1/server.py
++++ b/20240318/1/server.py
+@@ -70,50 +70,89 @@ class Area():
+     def __init__(self):
+         self.pers = Pers()
+         self.monster = [[None for j in range(10)] for i in range(10)]
++        self.weapon = {'sword':10, 'spear':15, 'axe':20}
+ 
+ 
+-    def moved_to(self, direction):
+-        match direction:
+-            case 'up':
+-                self.pers.move_y(1)
+-            case 'down':
+-                self.pers.move_y(-1)
+-            case 'left':
+-                self.pers.move_x(-1)
+-            case 'right':
+-                self.pers.move_x(1)
++    async def moved_to(self, x, y, writer, reader):
++        self.pers.move_x(x)
++        self.pers.move_y(y)
+ 
+-        print(f"Moved to ({self.pers.x}, {self.pers.y})")
++        writer.write(f"Moved to ({self.pers.x}, {self.pers.y})\n".encode())
++        await reader.readline()
+ 
+-        self.encounter(self.pers.x, self.pers.y)
++        self.encounter(self.pers.x, self.pers.y, writer)
+ 
+ 
+-    def addmon(self, x, y, hi, name, hp):
++    async def addmon(self, x, y, hi, name, hp, writer, reader):
+         if name not in list_cows() and name != "jgsbat":
+-            print("Cannot add unknown monster")
++            writer.write("Cannot add unknown monster\n".encode())
+             return 
+ 
+         vr_monster = self.monster[x][y]
+ 
+         self.monster[x][y] = Monster(x, y, hi, name, hp)
+         
+-        print(f"Added monster {name} to ({x}, {y}) saying {hi}")
++        writer.write(f"Added monster {name} to ({x}, {y}) saying {hi}\n".encode())
++        await reader.readline()
+ 
+         if vr_monster is not None:
+-            print("Replaced the old monster")
++            writer.write("Replaced the old monster\n".encode())
++        else:
++            writer.write("\n".encode())
+ 
+ 
+-    def encounter(self, x, y):
++    def encounter(self, x, y, writer):
+         if self.monster[x][y] is not None:
+-            print(self.monster[x][y])
++            writer.write(f"{self.monster[x][y].name} {self.monster[x][y].text}\n".encode())
++        else:
++            writer.write("nomonster\n".encode())
++
++
++    async def attack(self, monster_name, weapon_name, writer, reader):
++        if self.monster[self.pers.x][self.pers.y] is None:
++            writer.write("No monster here\n".encode())
++        else:
++            damag = self.weapon[weapon_name]
++
++            vr_hp = self.monster[self.pers.x][self.pers.y].hp
++            vr_name = self.monster[self.pers.x][self.pers.y].name
++
++            if monster_name != vr_name:
++                writer.write(f"No {monster_name} here\n".encode())
++                return
++            
++            if vr_hp > damag:
++                self.monster[self.pers.x][self.pers.y].hp -= damag
++                vr_hp = damag
++            else:
++                del self.monster[self.pers.x][self.pers.y]
++                self.monster[self.pers.x][self.pers.y] = None
++
++            writer.write(f"Attacked {vr_name}, damage {vr_hp} hp\n".encode())
++            await reader.readline()
++
++            if self.monster[self.pers.x][self.pers.y] is None:
++                writer.write(f"{vr_name} died\n".encode())
++            else:
++                writer.write(f"{vr_name} now has {self.monster[self.pers.x][self.pers.y].hp}\n".encode())
+ 
+ 
+ async def echo(reader, writer):
+     area = Area()
+ 
+     while data := await reader.readline():
+-        print(data)
+-        writer.write(data.swapcase())
++        data = data.decode()
++        
++        s = shlex.split(data, False, False)
++
++        match s:
++            case ['move', x, y]:
++                await area.moved_to(int(x), int(y), writer, reader)
++            case ['addmon', x, y, hello_string, monster_name, hp]:
++                await area.addmon(int(x), int(y), hello_string, monster_name, int(hp), writer, reader)
++            case ['attack', monster_name, 'with', weapon_name]:
++                await area.attack(monster_name, weapon_name, writer, reader)
++
+     writer.close()
+     await writer.wait_closed()
+ 
+-- 
+2.44.0
+
